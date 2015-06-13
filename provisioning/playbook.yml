@@ -1,0 +1,76 @@
+---
+- hosts: all
+  user: vagrant
+  tasks:
+  - name: install software-properties-common
+    apt: pkg=software-properties-common
+    sudo: true
+
+  - name: install curl
+    apt: pkg=curl
+    sudo: true
+
+  # id_rsa
+  - name: copy id_rsa
+    copy: src=templates/id_rsa  dest=/home/vagrant/.ssh/id_rsa
+  - file: path=/home/vagrant/.ssh/id_rsa mode=600
+
+  # PHP5
+  - name: add php5 ppa
+    apt_repository: repo='ppa:ondrej/php5'
+    sudo: true
+  - name: install PHP5 packages
+    apt: name={{ item }} state=latest
+    sudo: true
+    with_items:
+      - php5
+      - libapache2-mod-php5
+      - php5-cli
+      - php5-dev
+      - php5-mysql
+      - php-pear
+      - php5-mcrypt
+      - php5-gd
+      - php5-curl
+      - php5-xdebug
+      - php5-memcache
+      - php5-memcached
+      - php5-readline
+      - php5-sqlite
+      - php5-json
+
+  # MySQL
+  - name: install MySQL
+    apt: name={{ item }} state=latest
+    sudo: true
+    with_items:
+      - mysql-server
+      - mysql-client
+      - python-mysqldb
+
+  - name: mysql template
+    template: src=templates/my.cnf dest=/etc/mysql/my.cnf
+    sudo: true
+
+  - name: add mysql user
+    sudo: true
+    mysql_user: name=vagrant
+                host={{ item }}
+                password=vagrant priv=*.*:ALL,GRANT
+                login_user=root
+                login_password=
+    with_items:
+      - '%'
+      - localhost
+
+  # zsh
+  - name: install zsh
+    apt: pkg=zsh
+    sudo: true
+
+  - name: change shell
+    command: chsh -s /bin/zsh vagrant
+    sudo: true
+
+  - git: repo=ssh://git@github.com/tamanyan/oh-my-zsh.git dest=/home/vagrant/.oh-my-zsh
+  - copy: src=templates/.zshrc dest=/home/vagrant/.zshrc

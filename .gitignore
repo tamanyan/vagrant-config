@@ -1,0 +1,3 @@
+.vagrant
+workspace/*
+provisioning/templates/id_rsa
