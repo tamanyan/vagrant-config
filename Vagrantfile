@@ -17,6 +17,8 @@ Vagrant.configure(2) do |config|
   # config.vm.network :private_network, ip: "192.168.33.10"
   # mysql
   config.vm.network :forwarded_port, guest: 3306, host: 3366
+  config.vm.network :forwarded_port, guest: 80, host: 8088
+  config.ssh.forward_agent = true
   config.vm.provision "ansible" do |ansible|
     ansible.playbook = "provisioning/playbook.yml"
   end

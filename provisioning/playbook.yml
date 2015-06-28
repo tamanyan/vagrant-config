@@ -10,11 +10,6 @@
     apt: pkg=curl
     sudo: true
 
-  # id_rsa
-  - name: copy id_rsa
-    copy: src=templates/id_rsa  dest=/home/vagrant/.ssh/id_rsa
-  - file: path=/home/vagrant/.ssh/id_rsa mode=600
-
   # PHP5
   - name: add php5 ppa
     apt_repository: repo='ppa:ondrej/php5'
@@ -63,6 +58,25 @@
       - '%'
       - localhost
 
+  # Apache
+  - name: install apache
+    apt: name={{ item }} state=latest
+    sudo: true
+    with_items:
+      - apache2
+
+  - name: apache template
+    template: src=templates/000-default.conf dest=/etc/apache2/sites-available/000-default.conf
+    sudo: true
+
+  - name: enable apache rewrite module
+    action: command a2enmod rewrite
+    sudo: true
+
+  - name: start apache2
+    action: service name=apache2 state=restarted
+    sudo: true
+
   # zsh
   - name: install zsh
     apt: pkg=zsh
@@ -72,5 +86,5 @@
     command: chsh -s /bin/zsh vagrant
     sudo: true
 
-  - git: repo=ssh://git@github.com/tamanyan/oh-my-zsh.git dest=/home/vagrant/.oh-my-zsh
+  - git: repo=ssh://git@github.com/tamanyan/oh-my-zsh.git dest=/home/vagrant/.oh-my-zsh accept_hostkey=yes
   - copy: src=templates/.zshrc dest=/home/vagrant/.zshrc
