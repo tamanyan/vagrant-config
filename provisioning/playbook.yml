@@ -47,6 +47,11 @@
     template: src=templates/my.cnf dest=/etc/mysql/my.cnf
     sudo: true
 
+  - name: restart mysql
+    command: service mysql restart
+    # action: service name=mysql state=restarted
+    sudo: true
+
   - name: add mysql user
     sudo: true
     mysql_user: name=vagrant
@@ -73,7 +78,7 @@
     action: command a2enmod rewrite
     sudo: true
 
-  - name: start apache2
+  - name: restart apache2
     action: service name=apache2 state=restarted
     sudo: true
 
