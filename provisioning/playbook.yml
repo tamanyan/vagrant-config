@@ -93,3 +93,18 @@
 
   - git: repo=ssh://git@github.com/tamanyan/oh-my-zsh.git dest=/home/vagrant/.oh-my-zsh accept_hostkey=yes
   - copy: src=templates/.zshrc dest=/home/vagrant/.zshrc
+
+  # percol
+  - name: install percol
+    command: pip install percol
+    sudo: true
+
+  # copy
+  - file: path=/home/vagrant/.percol.d/
+  - copy: src=templates/rc.py dest=/home/vagrant/.percol.d/rc.py
+  # set locale
+  - copy: src=templates/locale dest=/etc/default/locale
+    sudo: true
+
+  # gitconfig
+  - copy: src=templates/.gitconfig dest=/home/vagrant/.gitconfig
