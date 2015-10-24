@@ -2,6 +2,9 @@
 - hosts: all
   user: vagrant
   tasks:
+  - name: updates a server
+    apt: update_cache=yes
+    sudo: true
   - name: install software-properties-common
     apt: pkg=software-properties-common
     sudo: true
@@ -100,7 +103,7 @@
     sudo: true
 
   # copy
-  - file: path=/home/vagrant/.percol.d/
+  - file: path=/home/vagrant/.percol.d state=directory
   - copy: src=templates/rc.py dest=/home/vagrant/.percol.d/rc.py
   # set locale
   - copy: src=templates/locale dest=/etc/default/locale
